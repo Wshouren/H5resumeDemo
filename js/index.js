@@ -7,7 +7,7 @@ let loadingRender = function () {
         timer = setTimeout(() => {
             n / len > 0.9 ? (callback && callback()) :
                 (alert('很遗憾，网络状况不佳..'), window.location = 'https://www.baidu.com');
-        }, 15000);
+        }, 60000);
     }
 
     function run(callback) {
