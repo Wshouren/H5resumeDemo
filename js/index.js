@@ -7,7 +7,7 @@ let loadingRender = function () {
         timer = setTimeout(() => {
             n / len > 0.9 ? (callback && callback()) :
                 (alert('很遗憾，网络状况不佳..'), window.location = 'https://www.baidu.com');
-        }, 60000);
+        }, 15000);
     }
 
     function run(callback) {
@@ -211,27 +211,30 @@ let cubeRender = (function () {
         }*/
     };
     return {
-        init: function () {
-            $cubeBox.css('display', 'block');
+        init: function (isReturn=false) {
+            $cubeBox.css('display','block');
             let cube = $cube[0];
             cube.rotateX = -35;
             cube.rotateY = 35;
+            if(isReturn){
+                isReturn=false;
+                return;
+            }
             $cube.on('touchstart', start)
                 .on('touchmove', move)
                 .on('touchend', end);
             $liList.tap(function(){
-                /*console.log($(this).index() + 1);*/
-                $cubeBox.fadeOut();
+                $cubeBox.css('display','none');
                 detailRender.init($(this).index());
             });
         }
     }
 })();
-
 let detailRender = (function () {
     let $detailBox = $('.detailBox'),
         $dl = $('.page1>dl'),
-        swiper = null;
+        swiper = null,
+        $returnAry=$detailBox.find('.return');
 
     let swiperInit = function (index) {
         swiper = new Swiper('.swiper-container', {
@@ -247,7 +250,6 @@ let detailRender = (function () {
         swiperAry.forEach(function (item,index) {
 
             if($(item).index()===aIndex){
-                console.log($(item).index());
                 item.id=`page${index+1}`;
                 return;
             }
@@ -269,17 +271,21 @@ let detailRender = (function () {
             });
             $dl.makisu('close');
         }
-
-
     };
     return {
         init: function (index=0) {
-            $detailBox.css('display', 'block');
-            swiperInit(index);
+            $detailBox.css('display','block');
+            swiper? swiper.slideTo(index,0):swiperInit(index);
+            $returnAry.on('tap',()=>{
+                $detailBox.css('display','none');
+                cubeRender.init(true);
+            });
         }
     }
 })();
-
+/*$(document).on('touchstart touchmove touchend',(e)=>{
+   e.preventDefault();
+});*/
 
 let url = window.location.href,
     index = url.indexOf('#'),
